@@ -89,7 +89,8 @@ add_binding(none, #exchange{ name = XName } = X,
                 true ->
                     Caches = mnesia:dirty_match_object(
                                ?LVC_TABLE, #cached{key = #cachekey{
-                                                            exchange = X, routing_key = '_'},
+                                                            exchange = XName,
+                                                            routing_key = '_'},
                                                    content = '_'}),
                     lists:foreach(
                       fun(#cached{key = #cachekey{routing_key = RKey}, content = Content}) ->
