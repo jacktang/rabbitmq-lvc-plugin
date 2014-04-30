@@ -101,8 +101,8 @@ add_binding(none, #exchange{ name = XName } = X,
                                       Msg = rabbit_basic:message(
                                               XName, RoutingKey, Props, Payload),
                                       rabbit_amqqueue:deliver(
-                                        Q, rabbit_basic:delivery(
-                                             false, false, Msg, undefined));
+                                        [Q], rabbit_basic:delivery(
+                                               false, false, Msg, undefined));
                                   false ->
                                       ok
                               end
