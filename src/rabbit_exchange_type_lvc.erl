@@ -88,7 +88,9 @@ add_binding(none, #exchange{ name = XName } = X,
                     end;
                 true ->
                     Caches = mnesia:dirty_match_object(
-                               ?LVC_TABLE, #cachekey{exchange = XName, routing_key = '_'}),
+                               ?LVC_TABLE, #cached{key = #cachekey{
+                                                            exchange = X, routing_key = '_'},
+                                                   content = '_'}),
                     lists:foreach(
                       fun(#cached{key = #cachekey{routing_key = RKey}, content = Content}) ->
                               case match_route_key(RKey, RoutingKey) of
@@ -133,7 +135,7 @@ match_words(WS, ["#"|TD]) ->
       fun(N) ->
               NWS = lists:nthtail(N, WS),
               match_words(NWS, TD)
-      end, lists:seq(0, Len - 1));
+      end, lists:seq(0, Len));
 match_words(_Source, _Dest) ->
     false.
 
