@@ -68,7 +68,7 @@ add_binding(none, #exchange{ name = XName } = X,
               internal_error,
               "could not find queue '~s'",
               [QueueName]);
-        {ok, #amqqueue{ pid = Q }} ->
+        {ok, #amqqueue{ pid = Q } = Queue} ->
             case lists:member($#, binary_to_list(RoutingKey)) or 
                 lists:member($*, binary_to_list(RoutingKey)) of
                 false ->
@@ -84,7 +84,7 @@ add_binding(none, #exchange{ name = XName } = X,
                             Msg = rabbit_basic:message(
                                     XName, RoutingKey, Props, Payload),
                             rabbit_amqqueue:deliver(
-                              Q, rabbit_basic:delivery(false, false, Msg, undefined))
+                              [Q], rabbit_basic:delivery(false, false, Msg, undefined))
                     end;
                 true ->
                     Caches = mnesia:dirty_match_object(
@@ -101,7 +101,7 @@ add_binding(none, #exchange{ name = XName } = X,
                                       Msg = rabbit_basic:message(
                                               XName, RoutingKey, Props, Payload),
                                       rabbit_amqqueue:deliver(
-                                        [Q], rabbit_basic:delivery(
+                                        [Queue], rabbit_basic:delivery(
                                                false, false, Msg, undefined));
                                   false ->
                                       ok
